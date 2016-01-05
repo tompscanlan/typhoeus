@@ -2,7 +2,29 @@
 
 ## Master
 
-[Full Changelog](http://github.com/typhoeus/typhoeus/compare/v0.7.1...master)
+[Full Changelog](http://github.com/typhoeus/typhoeus/compare/v0.7.3...master)
+
+* `EasyFactory`: Reduced object allocations and method calls during deprecated
+    option handling and option sanitization.
+  ([Tasos Laskos](https://github.com/zapotek))
+* `Response::Header` ([Tasos Laskos](https://github.com/zapotek))
+    * `#process_pair`: Halved `#set_value` calls.
+    * `#set_value`: Minimized `Hash` accesses.
+    * `#parse`: Use `String#start_with?` instead of `Regexp` match.
+    * `#process_line`: Optimized key/value sanitization.
+
+## 0.7.3
+
+[Full Changelog](http://github.com/typhoeus/typhoeus/compare/v0.7.2...v0.7.3)
+
+* Add on_body callbacks individually to allow Ethon to recognize the return code
+
+## 0.7.2
+
+[Full Changelog](http://github.com/typhoeus/typhoeus/compare/v0.7.1...v0.7.2)
+
+* Allow arrays to be passed to Expectation#and_return
+  ([JP Moral](https://github.com/jpmoral))
 
 * Added getter for `redirect_time` value.
   ([Adrien Jarthon](https://github.com/jarthod))

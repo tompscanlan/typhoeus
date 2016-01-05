@@ -86,10 +86,14 @@ module Faraday # :nodoc:
 
         req.on_complete do |resp|
           if resp.timed_out?
-            if parallel?(env)
-              # TODO: error callback in async mode
-            else
+            env[:typhoeus_timed_out] = true
+            unless parallel?(env)
               raise Faraday::Error::TimeoutError, "request timed out"
+            end
+          elsif resp.response_code == 0
+            env[:typhoeus_connection_failed] = true
+            unless parallel?(env)
+              raise Faraday::Error::ConnectionFailed, resp.return_message
             end
           end
 
@@ -137,8 +141,8 @@ module Faraday # :nodoc:
 
       def configure_timeout(req, env)
         env_req = env[:request]
-        req.options[:timeout_ms] = (env_req[:timeout] * 1000)             if env_req[:timeout]
-        req.options[:connecttimeout_ms] = (env_req[:open_timeout] * 1000) if env_req[:open_timeout]
+        req.options[:timeout_ms] = (env_req[:timeout] * 1000).to_i             if env_req[:timeout]
+        req.options[:connecttimeout_ms] = (env_req[:open_timeout] * 1000).to_i if env_req[:open_timeout]
       end
 
       def configure_socket(req, env)

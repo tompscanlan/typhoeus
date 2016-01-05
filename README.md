@@ -2,6 +2,16 @@
 
 Like a modern code version of the mythical beast with 100 serpent heads, Typhoeus runs HTTP requests in parallel while cleanly encapsulating handling logic.
 
+# Typhoeus needs your help!
+
+I don't have enough time, but I think this is a nice project! If you or your company is using Typhoeus you should help keeping it alive! Pick any of:
+
+* add docs
+* respond to issues
+* add features
+
+Or send me an email! I would be more than happy to help getting you up to speed!
+
 ## Example
 
 A single request:
@@ -53,6 +63,24 @@ We can see from this that the first argument is the url. The second is a set of 
 The options are all optional. The default for `:method` is `:get`.
 
 When you want to send URL parameters, you can use `:params` hash to do so. Please note that in case of you should send a request via `x-www-form-urlencoded` parameters, you need to use `:body` hash instead. `params` are for URL parameters and `:body` is for the request body.
+
+#### Sending requests through the proxy
+
+Add a proxy url to the list of options:
+
+```ruby
+options = {proxy: 'http://myproxy.org'}
+req = Typhoeus::Request.new(url, options)
+```
+
+If your proxy requires authentication, add it with `proxyuserpwd` option key:
+
+```ruby
+options = {proxy: 'http://proxyurl.com', proxyuserpwd: 'user:password'}
+req = Typhoeus::Request.new(url, options)
+```
+
+Note that `proxyuserpwd` is a colon-separated username and password, in the vein of basic auth `userpwd` option.
 
 
 You can run the query either on its own or through the hydra:
@@ -345,6 +373,15 @@ Typhoeus.get("www.example.com") == response
 #=> true
 ```
 
+You may also specify an array for the stub to return sequentially.
+
+```ruby
+Typhoeus.stub('www.example.com').and_return([response1, response2])
+
+Typhoeus.get('www.example.com') == response1 #=> true
+Typhoeus.get('www.example.com') == response2 #=> true
+```
+
 When testing make sure to clear your expectations or the stubs will persist between tests. The following can be included in your spec_helper.rb file to do this automatically.
 
 ```ruby
@@ -469,6 +506,15 @@ Typhoeus::Config.verbose = true
 Just remember that libcurl prints it’s debug output to the console (to
 STDERR), so you’ll need to run your scripts from the console to see it.
 
+### Default User Agent Header
+
+In many cases, all HTTP requests made by an application require the same User-Agent header set. Instead of supplying it on a per-request basis by supplying a custom header, it is possible to override it for all requests using:
+
+
+```ruby
+Typhoeus::Config.user_agent = "custom user agent"
+```
+
 ### Running the specs
 
 Running the specs should be as easy as:
@@ -477,6 +523,9 @@ Running the specs should be as easy as:
 bundle install
 bundle exec rake
 ```
+## Semantic Versioning
+
+This project conforms to [semver](http://semver.org/).
 
 ## LICENSE
 
@@ -508,4 +557,3 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 
 [![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/typhoeus/typhoeus/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
-
